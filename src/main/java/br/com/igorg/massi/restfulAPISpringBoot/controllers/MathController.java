@@ -1,6 +1,7 @@
 package br.com.igorg.massi.restfulAPISpringBoot.controllers;
 
 
+import br.com.igorg.massi.restfulAPISpringBoot.exception.UnsupportedMathOperationException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,20 +10,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/math")
 public class MathController {
 
-    @RequestMapping("/sum/{numberOne}/{numberTwo}/")
+    @RequestMapping("/sum/{numberOne}/{numberTwo}")
     public Double sum(
             @PathVariable("numberOne") String numberOne,
             @PathVariable("numberTwo") String numberTwo
             )
             throws IllegalArgumentException{
-        if(!isNumeric(numberOne) || isNumeric(numberTwo)) throw  new IllegalArgumentException();
+        if(!isNumeric(numberOne) || !isNumeric(numberTwo)) throw new UnsupportedMathOperationException("Please set a numeric value!");
 
         return  convertToDouble(numberOne) + convertToDouble(numberTwo);
 
     }
 
     private Double convertToDouble( String strNumber) throws IllegalArgumentException{
-        if( strNumber.isEmpty()) throw new IllegalArgumentException();
+        if( strNumber.isEmpty())  throw new UnsupportedMathOperationException("Please set a numeric value!");
         String number = strNumber.replace(",", ".");
 
         return Double.parseDouble(number);
@@ -33,4 +34,6 @@ public class MathController {
 
         return number.matches("[-+]?[0-9]*\\.?[0-9]+");
     }
+
+
 }
